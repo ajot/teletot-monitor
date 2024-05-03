@@ -6,6 +6,7 @@ import pyaudio
 import wave
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.error import InvalidToken
 
 # Configure logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -31,7 +32,6 @@ async def record_audio_async(duration=10):
     RATE = 44100
     CHUNK = 1024
     RECORD_SECONDS = duration
-
     audio = pyaudio.PyAudio()
     stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
     logger.info("Recording started")
@@ -70,13 +70,17 @@ async def record(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(filename, 'rb'))
 
 if __name__ == '__main__':
-    # Initialize the bot with the API token from the configuration file
-    from config import TELEGRAM_API_TOKEN
-    application = ApplicationBuilder().token(TELEGRAM_API_TOKEN).build()
+    try:
+        from config import TELEGRAM_API_TOKEN
+    except ModuleNotFoundError:
+        logger.error("Configuration file not found. Please ensure 'config.py' exists and is properly named.")
+        exit(1)  # Exit the program with an error code
 
-    # Register command handlers
-    application.add_handler(CommandHandler('start', start))
-    application.add_handler(CommandHandler('record', record))
-
-    # Start the bot
-    application.run_polling()
+    try:
+        application = ApplicationBuilder().token(TELEGRAM_API_TOKEN).build()
+        application.add_handler(CommandHandler('start', start))
+        application.add_handler(CommandHandler('record', record))
+        application.run_polling()
+    except InvalidToken as e:
+        logger.error(f"Invalid Telegram API Token: {e}")
+        exit(1)  # Exit if the token is invalid
