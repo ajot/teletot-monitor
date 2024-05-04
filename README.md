@@ -3,7 +3,7 @@
 ## 📢 Overview
 **TeleTot Sound Monitor** is a Telegram bot designed for parents who need a simple and effective way to monitor their baby while traveling. It overcomes typical hotel Wi-Fi limitations to deliver live audio from your baby's room directly to your phone. With just a quick Telegram command, you can listen to 10-second audio clips to ensure your baby is sleeping soundly or to check for any disturbances.
 
-![TeletTot Sound Monitor](/assets/teletot.PNG)
+<img src="/assets/teletot.PNG" width="400">
 
 ## 🌟 Features
 - **Instant Audio Monitoring**: Send a command via Telegram and receive a 10-second audio clip from your baby's room.
